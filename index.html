@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto Gol de Ouro</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    margin:0;
+}
+
+header{
+    background:#0d6e3d;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.logo{
+    width:150px;
+    max-width:100%;
+}
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:20px auto;
+}
+
+.painel{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.pesquisa{
+    text-align:center;
+    margin:20px 0;
+}
+
+.pesquisa input{
+    width:600px;
+    max-width:90%;
+    padding:15px;
+    border:2px solid #198754;
+    border-radius:10px;
+    font-size:16px;
+}
+
+.formulario{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.formulario h3{
+    margin-top:0;
+}
+
+.formulario input{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+button{
+    background:#198754;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#146c43;
+}
+
+.botoes{
+    margin-bottom:15px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#198754;
+    color:white;
+    padding:10px;
+}
+
+td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:center;
+}
+
+.destaque{
+    background:#fff3cd !important;
+    font-weight:bold;
+}
+
+@media(max-width:768px){
+
+table{
+    font-size:12px;
+}
+
+th,td{
+    padding:5px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<header>
+
+<img src="logo.png" alt="Logo Projeto Gol de Ouro" class="logo">
+
+<h1>PROJETO GOL DE OURO</h1>
+<p>Controle de Alunos</p>
+
+</header>
+
+<div class="container">
+
+<div class="painel">
+<h3>📊 Estatísticas</h3>
+<p>Total de Alunos: <span id="totalAlunos">0</span></p>
+</div>
+
+<div class="pesquisa">
+<input
+type="text"
+id="campoPesquisa"
+placeholder="🔍 Pesquisar aluno..."
+onkeyup="pesquisarAluno()">
+</div>
+
+<div class="formulario">
+
+<h3>➕ Cadastro de Aluno</h3>
+
+<input type="text" id="nome" placeholder="Nome do aluno">
+
+<input type="date" id="nascimento">
+
+<input type="text" id="telefone" placeholder="Telefone do responsável">
+
+<input type="text" id="responsavel" placeholder="Nome do responsável">
+
+<input type="text" id="endereco" placeholder="Endereço residencial">
+
+<button onclick="adicionarAluno()">
+Cadastrar Aluno
+</button>
+
+</div>
+
+<div class="botoes">
+
+<button onclick="exportarCSV()">
+📄 Exportar Excel
+</button>
+
+<button onclick="window.print()">
+🖨️ Imprimir Lista
+</button>
+
+</div>
+
+<table id="tabela">
+
+<tr>
+<th>Nº</th>
+<th>Nome do Aluno</th>
+<th>Data de Nascimento</th>
+<th>Telefone</th>
+<th>Responsável</th>
+<th>Endereço</th>
+<th>Ações</th>
+</tr>
+
+</table>
+
+</div>
+
+<script>
+
+let alunos = JSON.parse(localStorage.getItem("alunos")) || [];
+
+function salvarAlunos(){
+localStorage.setItem("alunos", JSON.stringify(alunos));
+}
+
+function atualizarPainel(){
+document.getElementById("totalAlunos").innerText = alunos.length;
+}
+
+function carregarAlunos(){
+
+const tabela = document.getElementById("tabela");
+
+while(tabela.rows.length > 1){
+tabela.deleteRow(1);
+}
+
+alunos.forEach((aluno,index)=>{
+
+let linha = tabela.insertRow();
+
+linha.innerHTML = `
+<td>${index+1}</td>
+<td contenteditable="true">${aluno.nome}</td>
+<td contenteditable="true">${aluno.nascimento}</td>
+<td contenteditable="true">${aluno.telefone}</td>
+<td contenteditable="true">${aluno.responsavel}</td>
+<td contenteditable="true">${aluno.endereco}</td>
+<td>
+<button onclick="excluirAluno(${index})">🗑️</button>
+</td>
+`;
+
+linha.addEventListener("input", atualizarDados);
+
+});
+
+atualizarPainel();
+}
+
+function adicionarAluno(){
+
+let nome = document.getElementById("nome").value;
+let nascimento = document.getElementById("nascimento").value;
+let telefone = document.getElementById("telefone").value;
+let responsavel = document.getElementById("responsavel").value;
+let endereco = document.getElementById("endereco").value;
+
+if(nome.trim() === ""){
+alert("Digite o nome do aluno.");
+return;
+}
+
+alunos.push({
+nome,
+nascimento,
+telefone,
+responsavel,
+endereco
+});
+
+salvarAlunos();
+carregarAlunos();
+
+document.getElementById("nome").value="";
+document.getElementById("nascimento").value="";
+document.getElementById("telefone").value="";
+document.getElementById("responsavel").value="";
+document.getElementById("endereco").value="";
+}
+
+function excluirAluno(index){
+
+if(confirm("Deseja excluir este aluno?")){
+
+alunos.splice(index,1);
+
+salvarAlunos();
+carregarAlunos();
+
+}
+}
+
+function atualizarDados(){
+
+const linhas = document.querySelectorAll("#tabela tr");
+
+alunos = [];
+
+for(let i=1;i<linhas.length;i++){
+
+let c = linhas[i].cells;
+
+alunos.push({
+nome:c[1].innerText,
+nascimento:c[2].innerText,
+telefone:c[3].innerText,
+responsavel:c[4].innerText,
+endereco:c[5].innerText
+});
+
+}
+
+salvarAlunos();
+atualizarPainel();
+}
+
+function pesquisarAluno(){
+
+let filtro = document
+.getElementById("campoPesquisa")
+.value
+.toUpperCase();
+
+let linhas = document.querySelectorAll("#tabela tr");
+
+for(let i=1;i<linhas.length;i++){
+
+let nome = linhas[i].cells[1].innerText.toUpperCase();
+
+linhas[i].classList.remove("destaque");
+
+if(filtro === ""){
+
+linhas[i].style.display="";
+
+}
+else if(nome.includes(filtro)){
+
+linhas[i].style.display="";
+linhas[i].classList.add("destaque");
+
+}
+else{
+
+linhas[i].style.display="none";
+
+}
+
+}
+
+}
+
+function exportarCSV(){
+
+let csv =
+"Nome,DataNascimento,Telefone,Responsavel,Endereco\n";
+
+alunos.forEach(aluno=>{
+
+csv += `"${aluno.nome}","${aluno.nascimento}","${aluno.telefone}","${aluno.responsavel}","${aluno.endereco}"\n`;
+
+});
+
+let blob = new Blob([csv],{
+type:"text/csv"
+});
+
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = "alunos-gol-de-ouro.csv";
+
+link.click();
+
+}
+
+window.onload = carregarAlunos;
+
+</script>
+
+</body>
+</html>
