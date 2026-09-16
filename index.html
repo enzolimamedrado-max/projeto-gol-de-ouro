@@ -169,6 +169,10 @@ onkeyup="pesquisarAluno()">
 
 <input type="text" id="responsavel" placeholder="Nome do responsável">
 
+<input type="text" id="alergia" placeholder="Possui alergia? Se sim, qual?">
+
+<input type="text" id="documento" placeholder="RG, CPF ou Certidão de Nascimento">
+
 <input type="text" id="endereco" placeholder="Endereço residencial">
 
 <button onclick="adicionarAluno()">
@@ -197,6 +201,8 @@ Cadastrar Aluno
 <th>Data de Nascimento</th>
 <th>Telefone</th>
 <th>Responsável</th>
+<th>Alergia</th>
+<th>Documento</th>
 <th>Endereço</th>
 <th>Ações</th>
 </tr>
@@ -235,6 +241,8 @@ linha.innerHTML = `
 <td contenteditable="true">${aluno.nascimento}</td>
 <td contenteditable="true">${aluno.telefone}</td>
 <td contenteditable="true">${aluno.responsavel}</td>
+<td contenteditable="true"></td>{aluno.alergia }</td>
+<td contenteditable="true"></td>{aluno.documento }</td>
 <td contenteditable="true">${aluno.endereco}</td>
 <td>
 <button onclick="excluirAluno(${index})">🗑️</button>
