@@ -241,8 +241,8 @@ linha.innerHTML = `
 <td contenteditable="true">${aluno.nascimento}</td>
 <td contenteditable="true">${aluno.telefone}</td>
 <td contenteditable="true">${aluno.responsavel}</td>
-<td contenteditable="true"></td>{aluno.alergia }</td>
-<td contenteditable="true"></td>{aluno.documento }</td>
+<td contenteditable="true">${aluno.alergia || ""}</td>
+<td contenteditable="true">${aluno.documento || ""}</td>
 <td contenteditable="true">${aluno.endereco}</td>
 <td>
 <button onclick="excluirAluno(${index})">🗑️</button>
@@ -262,6 +262,8 @@ let nome = document.getElementById("nome").value;
 let nascimento = document.getElementById("nascimento").value;
 let telefone = document.getElementById("telefone").value;
 let responsavel = document.getElementById("responsavel").value;
+let alergia = document.getElementById("alergia").value;
+let documento = document.getElementById("documento").value;
 let endereco = document.getElementById("endereco").value;
 
 if(nome.trim() === ""){
@@ -270,11 +272,13 @@ return;
 }
 
 alunos.push({
-nome,
-nascimento,
-telefone,
-responsavel,
-endereco
+    nome,
+    nascimento,
+    telefone,
+    responsavel,
+    alergia,
+    documento,
+    endereco
 });
 
 salvarAlunos();
@@ -284,6 +288,8 @@ document.getElementById("nome").value="";
 document.getElementById("nascimento").value="";
 document.getElementById("telefone").value="";
 document.getElementById("responsavel").value="";
+document.getElementById("alergia").value="";
+document.getElementById("documento").value="";
 document.getElementById("endereco").value="";
 }
 
@@ -314,15 +320,17 @@ nome:c[1].innerText,
 nascimento:c[2].innerText,
 telefone:c[3].innerText,
 responsavel:c[4].innerText,
-endereco:c[5].innerText
+alergia:c[5].innerText,
+documento:c[6].innerText,
+endereco:c[7].innerText
 });
 
 }
 
 salvarAlunos();
 atualizarPainel();
-}
 
+}
 function pesquisarAluno(){
 
 let filtro = document
